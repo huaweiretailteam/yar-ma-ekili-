@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hediye Çarkı</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-align: center;
+            margin: 20px;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+        h1 {
+            color: #ff5722;
+        }
+        #wheel-container {
+            margin: 20px auto;
+            position: relative;
+            width: 350px;
+            height: 350px;
+        }
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 5px solid #333;
+            overflow: hidden;
+            transform: rotate(0deg);
+            transition: transform 4s cubic-bezier(0.3, 1, 0.7, 1);
+        }
+        .slice {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            clip-path: polygon(0 0, 100% 0, 100% 100%);
+        }
+        #spinButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #ff9800;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s ease;
+        }
+        #spinButton:active {
+            transform: scale(0.95);
+        }
+        #winner {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4caf50;
+        }
+        #nameForm input {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        #nameForm button {
+            padding: 8px 12px;
+            font-size: 14px;
+            background-color: #03a9f4;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 5px;
+            transition: background-color 0.2s ease;
+        }
+        #nameForm button:hover {
+            background-color: #0288d1;
+        }
+        #participantCount {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #757575;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎉 Eğlenceli Hediye Çarkı 🎉</h1>
+    <p>İsminizi kaydedin ve çekilişe katılın!</p>
+
+    <!-- İsim Ekleme Formu -->
+    <form id="nameForm">
+        <input type="text" id="nameInput" placeholder="Ad Soyad" required>
+        <button type="submit">Kaydet</button>
+    </form>
+
+    <!-- Toplam Katılımcı Sayısı -->
+    <div id="participantCount">Toplam Katılımcı: 0</div>
+
+    <!-- Çark -->
+    <div id="wheel-container">
+        <div id="wheel"></div>
+    </div>
+
+    <!-- Çarkı Çevir Butonu -->
+    <button id="spinButton" disabled>Çarkı Çevir</button>
+
+    <!-- Kazanan -->
+    <div id="winner"></div>
+
+    <script>
+        const participants = [];
+        const nameForm = document.getElementById('nameForm');
+        const nameInput = document.getElementById('nameInput');
+        const participantCountElement = document.getElementById('participantCount');
+        const spinButton = document.getElementById('spinButton');
+        const winnerElement = document.getElementById('winner');
+        const wheel = document.getElementById('wheel');
+
+        let currentRotation = 0;
+
+        // İsim Ekleme
+        nameForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = nameInput.value.trim();
+            if (name && !participants.includes(name)) {
+                participants.push(name);
+                nameInput.value = '';
+                spinButton.disabled = false;
+                updateWheel();
+                updateParticipantCount();
+            } else {
+                alert('Geçerli bir isim girin veya isim zaten listede!');
+            }
+        });
+
+        // Katılımcı Sayısını Güncelle
+        function updateParticipantCount() {
+            participantCountElement.textContent = `Toplam Katılımcı: ${participants.length}`;
+        }
+
+        // Çarkı Güncelle
+        function updateWheel() {
+            wheel.innerHTML = ''; // Çarkı temizle
+            const sliceAngle = 360 / participants.length;
+            participants.forEach((participant, index) => {
+                const slice = document.createElement('div');
+                slice.className = 'slice';
+                slice.style.backgroundColor = `hsl(${(index * 137) % 360}, 70%, 70%)`;
+                slice.style.transform = `rotate(${index * sliceAngle}deg)`;
+                wheel.appendChild(slice);
+            });
+        }
+
+        // Çarkı Çevir
+        spinButton.addEventListener('click', () => {
+            if (participants.length === 0) {
+                alert('Çekiliş yapacak katılımcı yok!');
+                return;
+            }
+
+            const randomIndex = Math.floor(Math.random() * participants.length);
+            const winner = participants.splice(randomIndex, 1)[0]; // Kazananı çıkar
+            const sliceAngle = 360 / participants.length;
+
+            // Çarkın rastgele dönmesi
+            const rotations = Math.floor(Math.random() * 5) + 5;
+            const finalRotation = (randomIndex * sliceAngle) + rotations * 360;
+            currentRotation += finalRotation;
+
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                winnerElement.textContent = `Kazanan: ${winner} 🎉`;
+                updateParticipantCount();
+                updateWheel();
+                if (participants.length === 0) {
+                    spinButton.disabled = true; // Çarkı devre dışı bırak
+                }
+            }, 4000);
+        });
+    </script>
+</body>
+</html>
