@@ -20,8 +20,8 @@
 
         #wheel-container {
             margin: 50px auto;
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
             position: relative;
         }
 
@@ -33,10 +33,12 @@
             position: relative;
             overflow: hidden;
             background: conic-gradient(
-                #FF5733 0% 25%, 
-                #FFC300 25% 50%, 
-                #DAF7A6 50% 75%, 
-                #C70039 75% 100%
+                #FF5733 0% 16.6%,
+                #FFC300 16.6% 33.2%,
+                #DAF7A6 33.2% 49.8%,
+                #C70039 49.8% 66.4%,
+                #900C3F 66.4% 83%,
+                #581845 83% 100%
             );
             transition: transform 4s cubic-bezier(0.3, 0.8, 0.7, 1);
         }
@@ -44,11 +46,11 @@
         #pointer {
             width: 0;
             height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 30px solid #333;
+            border-left: 30px solid transparent;
+            border-right: 30px solid transparent;
+            border-bottom: 50px solid #333;
             position: absolute;
-            top: -20px;
+            top: -30px;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
